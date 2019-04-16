@@ -6,7 +6,7 @@ RFLAGS = -D_FORTIFY_SOURCE=2 -O2
 BUILDDIR = bin
 SRCDIR = src
 EXECUTABLE = inaccurate-pi
-TARGET = bin/$(EXECUTABLE)
+TARGET = $(BUILDDIR)/$(EXECUTABLE)
 
 PREFIX := /usr/local
 
