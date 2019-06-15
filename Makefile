@@ -29,7 +29,7 @@ $(TARGET): $(OBJECTS)
 	$(CC) -o $@ $^
 
 install:
-	install -Dm755 $(TARGET) '$(PREFIX)/bin'
+	install -Dm755 $(TARGET) '$(PREFIX)/bin/$(EXECUTABLE)'
 
 uninstall:
 	rm '$(PREFIX)/bin/$(EXECUTABLE)'
