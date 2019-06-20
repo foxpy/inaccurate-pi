@@ -7,18 +7,10 @@
 
 double range_randomd(double low, double high)
 {
-	double random;
-start:
-	if (getrandom(&random, sizeof(random), 0) != sizeof(random)) {
-		perror("getrandom");
-		exit(EXIT_FAILURE);
-	}
-	uint64_t exponent = *((uint64_t*)&random) & EXPONENT_MASK_DOUBLE;
+	return low;
+}
 
-	// get rid of subnormals, infinities and NaNs
-	if ((exponent == INFINITY_EXPONENT_DOUBLE) ||
-	    (exponent == SUBNORMAL_EXPONENT_DOUBLE)) {
-		goto start;
-	}
-	return random;
+signed range_randoms(signed low, signed high)
+{
+	return low;
 }
