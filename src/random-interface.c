@@ -27,13 +27,14 @@ static int platform_random(void *dst, size_t len)
 {
 #ifdef _WIN32
 	unsigned rc;
+	size_t i;
 	if (len < sizeof(unsigned)) {
 		if (rand_s(&rc) != 0) return -1;
 		memcpy(dst, &rc, len);
 		return 0;
 	}
 
-	for (size_t i = 0; i < len / sizeof(unsigned); i += sizeof(unsigned)) {
+	for (i = 0; i < len / sizeof(unsigned); i += sizeof(unsigned)) {
 		if (rand_s(((unsigned*) dst) + i) != 0) return -1;
 	}
 	if (len % sizeof(unsigned)) {
