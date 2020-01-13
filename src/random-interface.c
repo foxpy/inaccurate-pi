@@ -24,7 +24,7 @@ int range_randomd(double low, double high, double *dst)
 	val.u &= DOUBLE_FRACTION_MASK;
 	val.u |= DOUBLE_ONE_EXPONENT;
 	val.d -= 1;
-	*dst = low + val.d * (high - low); // fuck it I need [low, high) but not [0.0F, 1.0F) >:(
+	*dst = low + val.d * (high - low);
 	return 0;
 }
 
