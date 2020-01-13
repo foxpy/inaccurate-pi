@@ -1,5 +1,6 @@
 CC = clang
 CFLAGS = -Wall -Wextra -pedantic -std=gnu99
+LFLAGS = -lm
 DFLAGS = -DDEBUG -O0 -g
 RFLAGS = -D_FORTIFY_SOURCE=2 -O2
 
@@ -26,7 +27,7 @@ $(BUILDDIR)/%.c.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 $(TARGET): $(OBJECTS)
-	$(CC) -o $@ $^
+	$(CC) $(LFLAGS) -o $@ $^
 
 install:
 	install -Dm755 $(TARGET) '$(PREFIX)/bin/$(EXECUTABLE)'

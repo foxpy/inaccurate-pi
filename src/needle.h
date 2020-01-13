@@ -7,6 +7,7 @@ struct needle {
 };
 typedef struct needle needle;
 
-int drop_needle(needle *ndl, double l);
+int drop_needle(needle *ndl, double t);
+int needle_crosses(needle *ndl, double l, double t);
 
 #endif

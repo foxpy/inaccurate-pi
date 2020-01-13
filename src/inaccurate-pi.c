@@ -40,6 +40,8 @@ int main(int argc, char *argv[])
 	while (n-- > 0) {
 		if (drop_needle(&ndl, t) != 0) return EXIT_FAILURE;
 		printf("Dropped needle: at %f with %f deg\n", ndl.x, ndl.angle);
+		if (needle_crosses(&ndl, l, t)) puts("Crossed!");
+		else puts("Didn't cross!");
 	}
 
 	return EXIT_SUCCESS;

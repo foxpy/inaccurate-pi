@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <math.h>
 
 #ifdef __linux__
 #include <sys/random.h>
@@ -15,7 +16,6 @@
 
 #define DOUBLE_ONE_EXPONENT 0x3ff0000000000000
 #define DOUBLE_FRACTION_MASK 0xfffffffffffff
-#define abs(x) ((x>=0)?x:-x)
 
 union transparent_double {
 	double d;
