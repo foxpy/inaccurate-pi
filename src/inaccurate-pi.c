@@ -8,8 +8,8 @@ static void help(char *program_name);
 
 int main(int argc, char *argv[])
 {
-	double l, t;
-	long long n;
+	double l, t, P, pi;
+	long long n, i, crossed;
 	needle ndl;
 
 	if (argc != 4) {
@@ -37,11 +37,18 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	while (n-- > 0) {
+	crossed = 0;
+	for (i = 0; i < n; ++i) {
 		if (drop_needle(&ndl, t) != 0) return EXIT_FAILURE;
-		printf("Dropped needle: at %f with %f deg\n", ndl.x, ndl.angle);
-		if (needle_crosses(&ndl, l, t)) puts("Crossed!");
-		else puts("Didn't cross!");
+		if (needle_crosses(&ndl, l, t)) ++crossed;
+	}
+
+	if (crossed == 0) {
+		printf("Any needle did not cross the line.\n");
+	} else {
+		P = (double) crossed / n;
+		pi = (2*l) / (t*P);
+		printf("pi = %f\n", pi);
 	}
 
 	return EXIT_SUCCESS;
