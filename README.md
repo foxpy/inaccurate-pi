@@ -5,6 +5,6 @@ Calculate π using
 
 ## Goals
 
-- [ ] Implement universal random interface to use any random source
+- [x] Implement universal random interface to use any random source
 - [ ] Calculate pi using random source
 - [ ] Visualise results

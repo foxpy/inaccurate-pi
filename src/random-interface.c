@@ -1,7 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#ifdef __linux__
 #include <sys/random.h>
+#endif
 
 #include "random-interface.h"
 
@@ -15,12 +17,20 @@ union transparent_double {
 };
 typedef union transparent_double td;
 
+static int platform_random(void *dst, size_t len)
+{
+#ifdef __linux__
+	if (getrandom(dst, len, 0) == (ssize_t) len) return 0;
+#endif
+	return 1;
+}
+
 int range_randomd(double low, double high, double *dst)
 {
 	td val;
 
 	if (low >= high) return -1;
-	if (getrandom(&val.d, sizeof(val.d), 0) != sizeof(val.d)) return -1;
+	if (platform_random(&val.d, sizeof(val.d)) != 0) return -1;
 	val.u &= DOUBLE_FRACTION_MASK;
 	val.u |= DOUBLE_ONE_EXPONENT;
 	val.d -= 1;
@@ -33,7 +43,7 @@ int range_randoms(signed low, signed high, signed *dst)
 	unsigned u;
 
 	if (low >= high) return -1;
-	if (getrandom(&u, sizeof(u), 0) != sizeof(u)) return -1;
+	if (platform_random(&u, sizeof(u)) != 0) return -1;
 	u %= abs(low) + abs(high);
 	*dst = (low>=0) ? u - low : u + low;
 	return 0;
