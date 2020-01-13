@@ -1,6 +1,12 @@
+#ifdef _WIN32
+#define _CRT_RAND_S
+#include <string.h>
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+
 #ifdef __linux__
 #include <sys/random.h>
 #endif
@@ -19,9 +25,27 @@ typedef union transparent_double td;
 
 static int platform_random(void *dst, size_t len)
 {
+#ifdef _WIN32
+	unsigned rc;
+	if (len < sizeof(unsigned)) {
+		if (rand_s(&rc) != 0) return -1;
+		memcpy(dst, &rc, len);
+		return 0;
+	}
+
+	for (size_t i = 0; i < len / sizeof(unsigned); i += sizeof(unsigned)) {
+		if (rand_s(((unsigned*) dst) + i) != 0) return -1;
+	}
+	if (len % sizeof(unsigned)) {
+		if (rand_s((uncigned*) dst + len - sizeof(unsigned)) != 0)
+			return -1;
+	}
+#endif
+
 #ifdef __linux__
 	if (getrandom(dst, len, 0) == (ssize_t) len) return 0;
 #endif
+
 	return 1;
 }
 
