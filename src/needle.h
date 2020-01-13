@@ -3,7 +3,6 @@
 
 struct needle {
 	double x;
-	double y;
 	double angle; /* deg */
 };
 typedef struct needle needle;

@@ -39,8 +39,7 @@ int main(int argc, char *argv[])
 
 	while (n-- > 0) {
 		if (drop_needle(&ndl, t) != 0) return EXIT_FAILURE;
-		printf("Dropped needle: %f:%f, %f deg\n",
-		       ndl.x, ndl.y, ndl.angle);
+		printf("Dropped needle: at %f with %f deg\n", ndl.x, ndl.angle);
 	}
 
 	return EXIT_SUCCESS;
