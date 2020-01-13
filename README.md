@@ -8,3 +8,8 @@ Calculate π using
 - [x] Implement universal random interface to use any random source
 - [ ] Calculate pi using random source
 - [ ] Visualise results
+
+## Compatibility
+
+Runs on Linux. **Hopefully** runs on Windows but I have not tested it.
+Makefile is still not adapted for Windows though.
