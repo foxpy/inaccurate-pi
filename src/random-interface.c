@@ -38,7 +38,7 @@ static int platform_random(void *dst, size_t len)
 		if (rand_s(((unsigned*) dst) + i) != 0) return -1;
 	}
 	if (len % sizeof(unsigned)) {
-		if (rand_s((uncigned*) dst + len - sizeof(unsigned)) != 0)
+		if (rand_s((unsigned*) dst + len - sizeof(unsigned)) != 0)
 			return -1;
 	}
 #endif
