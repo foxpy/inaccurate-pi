@@ -3,14 +3,14 @@
 #include <string.h>
 #endif
 
+#ifdef __linux__
+#include <sys/random.h>
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <math.h>
-
-#ifdef __linux__
-#include <sys/random.h>
-#endif
 
 #include "random-interface.h"
 
@@ -23,9 +23,9 @@ union transparent_double {
 };
 typedef union transparent_double td;
 
+#ifdef _WIN32
 static int platform_random(void *dst, size_t len)
 {
-#ifdef _WIN32
 	unsigned rc;
 	size_t i;
 	if (len < sizeof(unsigned)) {
@@ -41,14 +41,17 @@ static int platform_random(void *dst, size_t len)
 		if (rand_s((unsigned*) dst + len - sizeof(unsigned)) != 0)
 			return -1;
 	}
+	return 0;
+}
 #endif
 
 #ifdef __linux__
+static int platform_random(void *dst, size_t len)
+{
 	if (getrandom(dst, len, 0) == (ssize_t) len) return 0;
-#endif
-
 	return 1;
 }
+#endif
 
 int range_randomd(double low, double high, double *dst)
 {
