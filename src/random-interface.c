@@ -1,22 +1,22 @@
-#ifdef _WIN32
-#define _CRT_RAND_S
-#endif
-
-#ifdef __linux__
-#include <sys/random.h>
-#define RAND_BUF_SIZE 4096
-#endif
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 #include <math.h>
 
+#ifdef _WIN32
+#define _CRT_RAND_S
+#endif
+
+#ifdef __linux__
+#include <sys/random.h>
+#endif
+
 #include "random-interface.h"
 
 #define DOUBLE_ONE_EXPONENT 0x3ff0000000000000
 #define DOUBLE_FRACTION_MASK 0xfffffffffffff
+#define RAND_BUF_SIZE 4096
 
 union transparent_double {
 	double d;
@@ -24,42 +24,31 @@ union transparent_double {
 };
 typedef union transparent_double td;
 
-#ifdef _WIN32
-static int platform_random(void *dst, size_t len)
-{
-	unsigned rc;
-	size_t i;
-	if (len < sizeof(unsigned)) {
-		if (rand_s(&rc) != 0) return -1;
-		memcpy(dst, &rc, len);
-		return 0;
-	}
-
-	for (i = 0; i < len / sizeof(unsigned); i += sizeof(unsigned)) {
-		if (rand_s(((unsigned*) dst) + i) != 0) return -1;
-	}
-	if (len % sizeof(unsigned)) {
-		if (rand_s((unsigned*) dst + len - sizeof(unsigned)) != 0)
-			return -1;
-	}
-	return 0;
-}
-#endif
-
-#ifdef __linux__
 static int platform_random(void *dst, size_t len)
 {
 	static uint8_t rand_buf[RAND_BUF_SIZE];
 	static size_t pos = RAND_BUF_SIZE;
 	size_t n;
 	uint8_t *data;
+#ifdef _WIN32
+	size_t i;
+#endif
 
 	data = dst;
 rand_start:
 	if (pos == RAND_BUF_SIZE) {
+#ifdef __linux__
 		if (getrandom(&rand_buf[0],
 		              sizeof(uint8_t)*RAND_BUF_SIZE, 0) == -1)
 			return -1;
+#elif defined _WIN32
+/* works only on perfectly aligned cache size == sizeof(unsigned)*N
+ * where N = 1, 2, 3, ...
+ */
+		for (i = 0; i < RAND_BUF_SIZE; i += sizeof(unsigned)) {
+			if (rand_s(&rand_buf[i]) != 0) return -1;
+		}
+#endif
 		pos = 0;
 	}
 
@@ -71,7 +60,6 @@ rand_start:
 	if (len != 0) goto rand_start;
 	return 0;
 }
-#endif
 
 int range_randomd(double low, double high, double *dst)
 {
