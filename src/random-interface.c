@@ -1,15 +1,16 @@
 #ifdef _WIN32
 #define _CRT_RAND_S
-#include <string.h>
 #endif
 
 #ifdef __linux__
 #include <sys/random.h>
+#define RAND_BUF_SIZE 4096
 #endif
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 #include <math.h>
 
 #include "random-interface.h"
@@ -48,8 +49,27 @@ static int platform_random(void *dst, size_t len)
 #ifdef __linux__
 static int platform_random(void *dst, size_t len)
 {
-	if (getrandom(dst, len, 0) == (ssize_t) len) return 0;
-	return 1;
+	static uint8_t rand_buf[RAND_BUF_SIZE];
+	static size_t pos = RAND_BUF_SIZE;
+	size_t n;
+	uint8_t *data;
+
+	data = dst;
+rand_start:
+	if (pos == RAND_BUF_SIZE) {
+		if (getrandom(&rand_buf[0],
+		              sizeof(uint8_t)*RAND_BUF_SIZE, 0) == -1)
+			return -1;
+		pos = 0;
+	}
+
+	n = (len <= RAND_BUF_SIZE - pos) ? len : RAND_BUF_SIZE - pos;
+	memcpy(data, &rand_buf[pos], n);
+	data += n;
+	pos += n;
+	len -= n;
+	if (len != 0) goto rand_start;
+	return 0;
 }
 #endif
 
