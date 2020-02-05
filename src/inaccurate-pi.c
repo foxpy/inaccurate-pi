@@ -1,8 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <float.h>
 
 #include "needle.h"
+#include "random-interface.h"
 
 static void help(char *program_name);
 
@@ -12,14 +14,22 @@ int main(int argc, char *argv[])
 	long long n, i, crossed;
 	needle ndl;
 
-	if (argc != 4) {
+	if (argc == 5) {
+		if (strcmp(argv[1], "--use-xorshift") == 0) {
+			if (set_random_function(RANDOM_FUNCTION_XORSHIFT) == -1)
+				return EXIT_FAILURE;
+		} else {
+			help(argv[0]);
+			return EXIT_FAILURE;
+		}
+	} else if (argc != 4) {
 		help(argv[0]);
 		return EXIT_FAILURE;
 	}
 
-	l = atof(argv[1]);
-	t = atof(argv[2]);
-	n = atoll(argv[3]);
+	l = atof(argv[argc-3]);
+	t = atof(argv[argc-2]);
+	n = atoll(argv[argc-1]);
 	if (l <= DBL_EPSILON) {
 		fprintf(stderr, "Fatal: l too small\n");
 		return EXIT_FAILURE;
@@ -56,7 +66,7 @@ int main(int argc, char *argv[])
 
 static void help(char *program_name)
 {
-	fprintf(stderr, "Usage: %s l t n\n", program_name);
+	fprintf(stderr, "Usage: %s [--use-xorshift] l t n\n", program_name);
 	fprintf(stderr, "Where:\n");
 	fprintf(stderr, "\tl - length of needle (floating point)\n");
 	fprintf(stderr, "\tt - distance between lines (floating point)\n");
