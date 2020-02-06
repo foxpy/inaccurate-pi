@@ -65,7 +65,7 @@ static int _platform_random(uint64_t *dst)
 {
 	uint32_t *u;
 	u = dst;
-	if (rand_s((uint32_t*) u) != 0 || rand_s((uint32_t*) u+1)) return -1;
+	if (rand_s((uint32_t*) u) != 0 || rand_s((uint32_t*) u+1) != 0) return -1;
 }
 #endif
 
