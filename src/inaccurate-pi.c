@@ -1,7 +1,7 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include <float.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "needle.h"
 #include "random-interface.h"
@@ -27,9 +27,9 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	l = atof(argv[argc-3]);
-	t = atof(argv[argc-2]);
-	n = atoll(argv[argc-1]);
+	l = atof(argv[argc - 3]);
+	t = atof(argv[argc - 2]);
+	n = atoll(argv[argc - 1]);
 	if (l <= DBL_EPSILON) {
 		fprintf(stderr, "Fatal: l too small\n");
 		return EXIT_FAILURE;
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 		printf("Any needle did not cross the line.\n");
 	} else {
 		P = (double) crossed / n;
-		pi = (2*l) / (t*P);
+		pi = (2 * l) / (t * P);
 		printf("pi = %f\n", pi);
 	}
 

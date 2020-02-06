@@ -1,8 +1,8 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
 #include <math.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #ifdef _WIN32
 #define _CRT_RAND_S
@@ -31,14 +31,14 @@ static Random_function rnd = _platform_random;
 
 uint64_t xorshift_state;
 
-int set_random_function(enum random_function func) {
+int set_random_function(enum random_function func)
+{
 	switch (func) {
 	case RANDOM_FUNCTION_PLATFORM:
 		rnd = _platform_random;
 		break;
 	case RANDOM_FUNCTION_XORSHIFT:
-		if (_platform_random(&xorshift_state) == -1)
-			return -1;
+		if (_platform_random(&xorshift_state) == -1) return -1;
 		rnd = _xorshift_random;
 		break;
 	}
@@ -48,10 +48,10 @@ int set_random_function(enum random_function func) {
 #ifdef __linux__
 static int _platform_random(uint64_t *dst)
 {
-	static uint64_t rand_buf[RAND_BUF_SIZE/sizeof(uint64_t)];
-	static uint64_t pos = RAND_BUF_SIZE/sizeof(uint64_t);
+	static uint64_t rand_buf[RAND_BUF_SIZE / sizeof(uint64_t)];
+	static uint64_t pos = RAND_BUF_SIZE / sizeof(uint64_t);
 
-	if (pos == RAND_BUF_SIZE/sizeof(uint64_t)) {
+	if (pos == RAND_BUF_SIZE / sizeof(uint64_t)) {
 		if (getrandom(&rand_buf[0], sizeof(rand_buf), 0) == -1)
 			return -1;
 		pos = 0;
@@ -65,7 +65,8 @@ static int _platform_random(uint64_t *dst)
 {
 	uint32_t *u;
 	u = dst;
-	if (rand_s((uint32_t*) u) != 0 || rand_s((uint32_t*) u+1) != 0) return -1;
+	if (rand_s((uint32_t*) u) != 0 || rand_s((uint32_t*) u + 1) != 0)
+		return -1;
 }
 #endif
 
