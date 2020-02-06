@@ -63,9 +63,9 @@ static int _platform_random(uint64_t *dst)
 #elif defined _WIN32
 static int _platform_random(uint64_t *dst)
 {
-	uint8_t *u;
+	uint32_t *u;
 	u = dst;
-	if (rand_s((uint8_t*) u) != 0 || rand_s((uint8_t*) u+4)) return -1;
+	if (rand_s((uint32_t*) u) != 0 || rand_s((uint32_t*) u+1)) return -1;
 }
 #endif
 
