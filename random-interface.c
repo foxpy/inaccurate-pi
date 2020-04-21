@@ -1,9 +1,3 @@
-#include <math.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #ifdef _WIN32
 #define _CRT_RAND_S
 #endif
@@ -12,6 +6,12 @@
 #include <sys/random.h>
 #define RAND_BUF_SIZE 4096
 #endif
+
+#include <math.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "random-interface.h"
 
@@ -63,10 +63,11 @@ static int _platform_random(uint64_t *dst)
 #elif defined _WIN32
 static int _platform_random(uint64_t *dst)
 {
-	uint32_t *u;
-	u = dst;
-	if (rand_s((uint32_t*) u) != 0 || rand_s((uint32_t*) u + 1) != 0)
+	uint32_t u[2];
+	if (rand_s(&u[0]) != 0 || rand_s(&u[1]) != 0)
 		return -1;
+	memcpy(dst, &u, sizeof(uint64_t));
+	return 0;
 }
 #endif
 
