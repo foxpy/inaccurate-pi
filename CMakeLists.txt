@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.10)
+project(InaccuratePi)
+add_executable(inaccurate-pi inaccurate-pi.c needle.c random-interface.c)
+if(NOT WIN32)
+	target_link_libraries(inaccurate-pi m)
+endif()
