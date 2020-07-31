@@ -1,14 +1,12 @@
 #include <math.h>
+#include <qc.h>
 
 #include "needle.h"
-#include "random-interface.h"
 
-int drop_needle(needle *ndl, double t)
+void drop_needle(qc_rnd *rnd, needle *ndl, double t)
 {
-	if (range_randomd(0.0, t, &ndl->x) != 0 ||
-	    range_randomd(0.0, 360.0, &ndl->angle) != 0)
-		return -1;
-	return 0;
+	ndl->x = qc_rnd_range_fp64(rnd, 0.0, t);
+	ndl->angle = qc_rnd_range_fp64(rnd, 0.0, 360.0);
 }
 
 int needle_crosses(needle *ndl, double l, double t)
