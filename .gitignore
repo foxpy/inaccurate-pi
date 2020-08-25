@@ -3,3 +3,4 @@ build/
 *.out
 .gdb_history
 .vscode/
+.idea/
