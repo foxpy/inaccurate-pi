@@ -4,8 +4,8 @@
 #include <qc.h>
 
 struct needle {
-	double x;
-	double angle; /* deg */
+    double x;
+    double angle; /* deg */
 };
 typedef struct needle needle;
 

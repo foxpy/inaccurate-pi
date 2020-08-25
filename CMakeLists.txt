@@ -2,14 +2,14 @@ cmake_minimum_required(VERSION 3.10)
 project(InaccuratePi)
 
 if(MSVC)
-	add_compile_options(/W3)
-	add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+    add_compile_options(/W3)
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
 else()
-	add_compile_options(-Wall -Wextra -Wpedantic)
+    add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 if(NOT WIN32)
-	link_libraries(m)
+    link_libraries(m)
 endif()
 
 add_subdirectory(qc)

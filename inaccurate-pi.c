@@ -34,28 +34,28 @@ int main(int argc, char *argv[]) {
     } else if (l <= DBL_EPSILON) {
         die("Fatal: l too small");
     } else if (t <= DBL_EPSILON) {
-		die("Fatal: t too small");
-	} else if (n <= 0) {
-		die("Fatal: expected positive n");
-	} else if (l >= t) {
-		die("Fatal: expected l < t");
-	}
+        die("Fatal: t too small");
+    } else if (n <= 0) {
+        die("Fatal: expected positive n");
+    } else if (l >= t) {
+        die("Fatal: expected l < t");
+    }
 
-	qc_rnd rnd;
-	qc_rnd_init(&rnd);
-	size_t crossed = 0;
-	needle ndl;
-	for (size_t i = 0; i < n; ++i) {
-		drop_needle(&rnd, &ndl, t);
-		if (needle_crosses(&ndl, l, t)) ++crossed;
-	}
+    qc_rnd rnd;
+    qc_rnd_init(&rnd);
+    size_t crossed = 0;
+    needle ndl;
+    for (size_t i = 0; i < n; ++i) {
+        drop_needle(&rnd, &ndl, t);
+        if (needle_crosses(&ndl, l, t)) ++crossed;
+    }
 
-	if (crossed == 0) {
-		printf("Any needle did not cross the line.\n");
-	} else {
-		double P = (double) crossed / n;
-		double pi = (2 * l) / (t * P);
-		printf("pi = %f\n", pi);
-	}
-	return EXIT_SUCCESS;
+    if (crossed == 0) {
+        printf("Any needle did not cross the line.\n");
+    } else {
+        double P = (double) crossed / n;
+        double pi = (2 * l) / (t * P);
+        printf("pi = %f\n", pi);
+    }
+    return EXIT_SUCCESS;
 }
