@@ -3,47 +3,49 @@
 #include <stdlib.h>
 #include <string.h>
 #include <qc.h>
-
 #include "needle.h"
 
-static void help(char *program_name);
+static void help(void *help_data) {
+    char* program_name = help_data;
+    fprintf(stderr, "Usage: %s --length=DOUBLE --distance=DOUBLE --iterations=INTEGER\n", program_name);
+    fputs("Where:\n", stderr);
+    fputs("\t--length - length of needle\n", stderr);
+    fputs("\t--distance - distance between lines\n", stderr);
+    fputs("\t--iterations - number of needles dropped\n", stderr);
+}
 
-int main(int argc, char *argv[])
-{
-	double l, t, P, pi;
-	long long n, i, crossed;
-	needle ndl;
-
-	if (argc != 4) {
-		help(argv[0]);
-		return EXIT_FAILURE;
-	}
-
-	l = atof(argv[argc - 3]);
-	t = atof(argv[argc - 2]);
-	n = atoll(argv[argc - 1]);
-	if (l <= DBL_EPSILON) {
-		fprintf(stderr, "Fatal: l too small\n");
-		return EXIT_FAILURE;
-	}
-	if (t <= DBL_EPSILON) {
-		fprintf(stderr, "Fatal: t too small\n");
-		return EXIT_FAILURE;
-	}
-	if (n <= 0) {
-		fprintf(stderr, "Fatal: expected positive n\n");
-		return EXIT_FAILURE;
-	}
-	if (l >= t) {
-		fprintf(stderr, "Fatal: expected l < t\n");
-		return EXIT_FAILURE;
+int main(int argc, char *argv[]) {
+    double l = 0.0;
+    double t = 0.0;
+    size_t n = 0;
+    qc_args* args = qc_args_new();
+    qc_args_set_help(args, help, argv[0]);
+    qc_args_double(args, "length", &l);
+    qc_args_double(args, "distance", &t);
+    qc_args_unsigned(args, "iterations", &n);
+    char* err;
+    if (qc_args_parse(args, argc, argv, &err) == -1) {
+        fprintf(stderr, "Failed to parse arguments: %s\n", err);
+        free(err);
+        exit(EXIT_FAILURE);
+    } else if (l == 0.0 || t == 0.0 || n == 0) {
+        help(argv[0]);
+        exit(EXIT_FAILURE);
+    } else if (l <= DBL_EPSILON) {
+        die("Fatal: l too small");
+    } else if (t <= DBL_EPSILON) {
+		die("Fatal: t too small");
+	} else if (n <= 0) {
+		die("Fatal: expected positive n");
+	} else if (l >= t) {
+		die("Fatal: expected l < t");
 	}
 
 	qc_rnd rnd;
 	qc_rnd_init(&rnd);
-
-	crossed = 0;
-	for (i = 0; i < n; ++i) {
+	size_t crossed = 0;
+	needle ndl;
+	for (size_t i = 0; i < n; ++i) {
 		drop_needle(&rnd, &ndl, t);
 		if (needle_crosses(&ndl, l, t)) ++crossed;
 	}
@@ -51,19 +53,9 @@ int main(int argc, char *argv[])
 	if (crossed == 0) {
 		printf("Any needle did not cross the line.\n");
 	} else {
-		P = (double) crossed / n;
-		pi = (2 * l) / (t * P);
+		double P = (double) crossed / n;
+		double pi = (2 * l) / (t * P);
 		printf("pi = %f\n", pi);
 	}
-
 	return EXIT_SUCCESS;
-}
-
-static void help(char *program_name)
-{
-	fprintf(stderr, "Usage: %s l t n\n", program_name);
-	fprintf(stderr, "Where:\n");
-	fprintf(stderr, "\tl - length of needle (floating point)\n");
-	fprintf(stderr, "\tt - distance between lines (floating point)\n");
-	fprintf(stderr, "\tn - number of needles (integer)\n");
 }
