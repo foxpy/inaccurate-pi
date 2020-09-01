@@ -22,13 +22,13 @@ int main(int argc, char *argv[]) {
         qc_args_call_help(args);
         exit(EXIT_FAILURE);
     } else if (l <= DBL_EPSILON) {
-        die("Fatal: l too small");
+        die("Fatal: length is too small");
     } else if (t <= DBL_EPSILON) {
-        die("Fatal: t too small");
+        die("Fatal: distance is too small");
     } else if (n <= 0) {
-        die("Fatal: expected positive n");
+        die("Fatal: number of iterations should be nonzero");
     } else if (l >= t) {
-        die("Fatal: expected l < t");
+        die("Fatal: expected length < distance");
     }
 
     qc_rnd rnd;
